@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer List</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #f3f4f6; }
+    .card-shadow { box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  </style>
+</head>
+
+<body class="text-gray-900">
+  <main class="max-w-6xl mx-auto px-6 py-10">
+    <!-- Header (like screenshot, plus Search + Export) -->
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <h1 class="text-[13px] font-bold text-gray-900">Customer List</h1>
+
+      <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
+        <input id="q"
+          placeholder="Search name / email / phone / id..."
+          class="w-full sm:w-72 rounded border border-gray-200 bg-white px-3 py-2 text-[12px] outline-none focus:ring-2 focus:ring-purple-200" />
+
+        <button id="btnExport"
+          class="rounded bg-slate-900 px-4 py-2 text-[11px] font-bold text-white hover:bg-slate-800">
+          Export CSV
+        </button>
+
+        <button id="btnOpenAdd"
+          class="rounded bg-purple-700 px-4 py-2 text-[11px] font-bold text-white hover:bg-purple-800">
+          Add New Customer
+        </button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="mt-4 rounded-md bg-white border border-gray-100 card-shadow overflow-hidden">
+      <div class="overflow-auto">
+        <table class="min-w-full text-[11px]">
+          <thead class="bg-white">
+            <tr class="text-gray-400 uppercase tracking-wider">
+              <th class="px-4 py-3 text-left font-bold w-[22%]">NAME</th>
+              <th class="px-4 py-3 text-left font-bold w-[28%]">EMAIL</th>
+              <th class="px-4 py-3 text-left font-bold w-[18%]">PHONE</th>
+              <th class="px-4 py-3 text-left font-bold w-[18%]">ID/PASSPORT</th>
+              <th class="px-4 py-3 text-left font-bold w-[14%]">ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody id="tbody" class="divide-y divide-gray-100"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="empty" class="hidden mt-4 text-[12px] text-gray-600">
+      Không có khách hàng phù hợp với từ khóa tìm kiếm.
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 z-50 hidden">
+    <div id="backdrop" class="absolute inset-0 bg-black/30"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="w-full max-w-lg rounded-lg bg-white border border-gray-200 card-shadow p-5">
+        <div class="flex items-center justify-between gap-3">
+          <h2 id="modalTitle" class="text-[13px] font-bold text-gray-900">Add New Customer</h2>
+          <button id="btnClose" class="rounded px-2 py-1 text-gray-600 hover:bg-gray-100">✕</button>
+        </div>
+
+        <form id="form" class="mt-4 space-y-3">
+          <div>
+            <label class="block text-[11px] font-bold text-gray-600 mb-1">Name</label>
+            <input id="name"
+              class="w-full rounded border border-gray-200 px-3 py-2 text-[12px] outline-none focus:ring-2 focus:ring-purple-200"
+              placeholder="e.g. Nguyen Van A" />
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold text-gray-600 mb-1">Email</label>
+            <input id="email" type="email"
+              class="w-full rounded border border-gray-200 px-3 py-2 text-[12px] outline-none focus:ring-2 focus:ring-purple-200"
+              placeholder="e.g. van@example.com" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">Phone</label>
+              <input id="phone"
+                class="w-full rounded border border-gray-200 px-3 py-2 text-[12px] outline-none focus:ring-2 focus:ring-purple-200"
+                placeholder="e.g. 0909123456" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">ID/Passport</label>
+              <input id="idpass"
+                class="w-full rounded border border-gray-200 px-3 py-2 text-[12px] outline-none focus:ring-2 focus:ring-purple-200"
+                placeholder="e.g. CMND123456" />
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-2 pt-2">
+            <button type="button" id="btnCancel"
+              class="rounded border border-gray-200 px-4 py-2 text-[11px] font-bold text-gray-700 hover:bg-gray-50">
+              Cancel
+            </button>
+            <button type="submit"
+              class="rounded bg-purple-700 px-4 py-2 text-[11px] font-bold text-white hover:bg-purple-800">
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "customer_list_standalone_v2";
+
+    function safeUUID() {
+      if (window.crypto?.randomUUID) return crypto.randomUUID();
+      return Math.random().toString(16).slice(2) + Date.now().toString(16);
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function csvEscape(value) {
+      const s = String(value ?? "");
+      if (s.includes('"') || s.includes(",") || s.includes("\n")) {
+        return '"' + s.replaceAll('"', '""') + '"';
+      }
+      return s;
+    }
+
+    const seed = [
+      { id: safeUUID(), name: "Emily Davis",    email: "emily.d@email.com",   phone: "0456789123", idpass: "A121354" },
+      { id: safeUUID(), name: "Michael Wilson", email: "michael.w@email.com", phone: "0789456123", idpass: "B13254645" },
+      { id: safeUUID(), name: "Nguyen Van A",   email: "van@example.com",     phone: "0909123456", idpass: "CMND123456" },
+      { id: safeUUID(), name: "Tran Thi B",     email: "thiB@example.com",    phone: "0912123456", idpass: "CMND654321" },
+      { id: safeUUID(), name: "Le Van C",       email: "vanc@example.com",    phone: "0933123456", idpass: "HC12345678" },
+      { id: safeUUID(), name: "Pham Thi D",     email: "thid@example.com",    phone: "0944123456", idpass: "PP87654321" },
+      { id: safeUUID(), name: "Hoang Van E",    email: "vane@example.com",    phone: "0955123456", idpass: "CCCD112233" },
+      { id: safeUUID(), name: "Do Thi F",       email: "thif@example.com",    phone: "0966123456", idpass: "CMND998877" },
+      { id: safeUUID(), name: "Nguyen Van G",   email: "vang@example.com",    phone: "0977123456", idpass: "HC11221122" }
+    ];
+
+    const els = {
+      q: document.getElementById("q"),
+      tbody: document.getElementById("tbody"),
+      empty: document.getElementById("empty"),
+
+      btnExport: document.getElementById("btnExport"),
+      btnOpenAdd: document.getElementById("btnOpenAdd"),
+
+      modal: document.getElementById("modal"),
+      backdrop: document.getElementById("backdrop"),
+      btnClose: document.getElementById("btnClose"),
+      btnCancel: document.getElementById("btnCancel"),
+      modalTitle: document.getElementById("modalTitle"),
+      form: document.getElementById("form"),
+
+      name: document.getElementById("name"),
+      email: document.getElementById("email"),
+      phone: document.getElementById("phone"),
+      idpass: document.getElementById("idpass")
+    };
+
+    let customers = [];
+    let editId = null;
+
+    function load() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        customers = raw ? JSON.parse(raw) : seed;
+      } catch {
+        customers = seed;
+      }
+    }
+
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(customers));
+    }
+
+    function openModal(mode) {
+      els.modal.classList.remove("hidden");
+      els.modalTitle.textContent = mode === "edit" ? "Edit Customer" : "Add New Customer";
+      setTimeout(() => els.name.focus(), 0);
+    }
+
+    function closeModal() {
+      els.modal.classList.add("hidden");
+      editId = null;
+      els.form.reset();
+    }
+
+    function getFiltered() {
+      const s = els.q.value.trim().toLowerCase();
+      if (!s) return customers;
+      return customers.filter(c => {
+        const name = (c.name || "").toLowerCase();
+        const email = (c.email || "").toLowerCase();
+        const phone = (c.phone || "").toLowerCase();
+        const idpass = (c.idpass || "").toLowerCase();
+        return name.includes(s) || email.includes(s) || phone.includes(s) || idpass.includes(s);
+      });
+    }
+
+    function rowHtml(c) {
+      return `
+        <tr>
+          <td class="px-4 py-3 font-bold text-gray-900">${escapeHtml(c.name)}</td>
+          <td class="px-4 py-3 text-gray-800">${escapeHtml(c.email)}</td>
+          <td class="px-4 py-3 text-gray-800">${escapeHtml(c.phone)}</td>
+          <td class="px-4 py-3 text-gray-800">${escapeHtml(c.idpass)}</td>
+          <td class="px-4 py-3">
+            <button data-edit="${c.id}" class="text-purple-700 font-bold hover:underline">Edit</button>
+            <span class="mx-2"></span>
+            <button data-del="${c.id}" class="text-red-600 font-bold hover:underline">Delete</button>
+          </td>
+        </tr>
+      `;
+    }
+
+    function render() {
+      const filtered = getFiltered();
+      els.tbody.innerHTML = filtered.map(rowHtml).join("");
+
+      els.empty.classList.toggle("hidden", filtered.length !== 0);
+
+      els.tbody.querySelectorAll("button[data-edit]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-edit");
+          const c = customers.find(x => x.id === id);
+          if (!c) return;
+
+          editId = id;
+          els.name.value = c.name || "";
+          els.email.value = c.email || "";
+          els.phone.value = c.phone || "";
+          els.idpass.value = c.idpass || "";
+          openModal("edit");
+        });
+      });
+
+      els.tbody.querySelectorAll("button[data-del]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-del");
+          customers = customers.filter(x => x.id !== id);
+          save();
+          render();
+        });
+      });
+    }
+
+    function exportCSV() {
+      const filtered = getFiltered();
+      const header = ["Name", "Email", "Phone", "ID/Passport"];
+      const rows = filtered.map(c => [c.name, c.email, c.phone, c.idpass]);
+
+      const csv = [
+        header.map(csvEscape).join(","),
+        ...rows.map(r => r.map(csvEscape).join(","))
+      ].join("\n");
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+
+      const now = new Date();
+      const stamp = now.toISOString().slice(0,10);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `customers_${stamp}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // events
+    els.q.addEventListener("input", render);
+
+    els.btnExport.addEventListener("click", exportCSV);
+
+    els.btnOpenAdd.addEventListener("click", () => {
+      editId = null;
+      els.form.reset();
+      openModal("add");
+    });
+
+    els.btnClose.addEventListener("click", closeModal);
+    els.btnCancel.addEventListener("click", closeModal);
+    els.backdrop.addEventListener("click", closeModal);
+
+    els.form.addEventListener("submit", (ev) => {
+      ev.preventDefault();
+
+      const name = els.name.value.trim();
+      const email = els.email.value.trim();
+      const phone = els.phone.value.trim();
+      const idpass = els.idpass.value.trim();
+
+      if (!name) { els.name.focus(); return; }
+
+      if (editId) {
+        const idx = customers.findIndex(x => x.id === editId);
+        if (idx >= 0) customers[idx] = { ...customers[idx], name, email, phone, idpass };
+      } else {
+        customers.push({ id: safeUUID(), name, email, phone, idpass });
+      }
+
+      save();
+      render();
+      closeModal();
+    });
+
+    // init
+    load();
+    save();
+    render();
+  </script>
+</body>
+</html>

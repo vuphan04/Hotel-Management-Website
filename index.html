@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Sign in | Hotel paradise</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="auhtor" content="harshil ramani" >
+<meta name="key words" content="Hotel-Room,Booking,Online,Best-Quality,Best-Service,India,Tour,5 Star,Food-Facilities" >
+<meta name="description" content="This Website is for online Hotel Room Booking ." >
+<meta name="viewport" content="width=device-width,intial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="refresh" content="120">
+
+<link rel="stylesheet" href="CSS/index.css" type="text/css"> <!--CSS-->
+<link rel="shortcut icon" href="IMAGES/hotel-paradise.png" type="image/x-icon"> <!--ICON-->
+<script type="text/javascript" src="JS/index.js" defer="true"></script>  <!--JS-->
+
+<style>
+
+@media only screen and (max-width: 600px) {
+
+	body
+	{
+		font-size:0.8em;
+	} 
+    .hotel-icon 
+	{
+	margin-top:-50px;
+	max-height:200px;
+	max-width:200px;
+	min-height:200px;
+	min-width:200px;
+	}
+	#rem
+	{
+		font-size:1em;
+	}
+	#remember-me
+	{
+		margin-left:-10px;
+		height:7px;
+		width:7px;
+	}
+	#account,#invalid-id-password
+    {
+                font-size: 1em;
+    }
+	#len
+	{
+		margin-top: 40px;
+	}	
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 280px) {
+	body
+	{
+		font-size:0.5em;
+	}
+    .hotel-icon 
+	{
+	margin-top:-50px;
+	max-height:150px;
+	max-width:150px;
+	min-height:150px;
+	min-width:150px;
+	}
+	#rem
+	{
+		font-size:1em;
+	}
+	#remember-me
+	{
+		margin-left:-10px;
+		height:12px;
+		width:12px;
+	}
+}
+
+@media only screen and (max-width: 375px) {
+	body
+	{
+		font-size:0.5em;
+	}
+    .hotel-icon 
+	{
+	margin-top:-50px;
+	max-height:150px;
+	max-width:150px;
+	min-height:150px;
+	min-width:150px;
+	}
+	#rem
+	{
+		font-size:1em;
+	}
+	#remember-me
+	{
+		margin-left:-10px;
+		height:7px;
+		width:7px;
+	}
+}
+
+@media only screen and (min-width: 600px) {
+
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+	body
+	{
+		font-size:1.5em;
+	} 
+    .hotel-icon 
+	{
+	margin-top:-50px;
+	max-height:250px;
+	max-width:250px;
+	min-height:250px;
+	min-width:250px;
+	}
+	#rem
+	{
+		font-size:1em;
+	}
+	#remember-me
+	{
+		margin-left:-10px;
+		height:12px;
+		width:12px;
+	}
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+
+}
+
+</style>
+
+</head>
+<body onload="focusElem()">
+<div class="container" id="container">
+	<div class="form-container sign-up-container">
+		<form action="#">
+			<img src="IMAGES/hotel-paradise.png" style="margin-bottom:-30px;" alt="Hotel Paradise" class="hotel-icon">
+			<h2 id="len" style="margin-bottom: 10px;">Create account now</h2>
+			<span style="font-size: 0.55em;color:green;margin-bottom:20px;"> And get best hotel rooms booked across Vietnam  !</span>
+			<input type="text" placeholder="Name" id="Name" autocomplete="on" autofocus="true" required/>
+			<input type="email" placeholder="Email" autocomplete="on" id="Email_signup" required/>
+			<input style="margin-bottom:20px;" autocomplete="on" id="Password_signup" type="password" placeholder="Password" required/>
+			<button type ="button" onclick="checkAccount()">Sign Up</button>
+			<h6 id="account"></h6>
+		</form>
+	</div>
+	<div class="form-container sign-in-container">
+		<form action="#">
+			<img src="IMAGES/hotel-paradise.png" alt="Hotel Paradise" class="hotel-icon">
+			<h1>Sign in</h1>
+			<span style="font-size:0.65em;margin-bottom:20px;">to use your account</span>
+			<input type="email" placeholder="Email" autcomplete="on" id="Email_signin" autofocus="true" required/>
+			<input type="password" placeholder="Password" autcomplete="on" id="Password_signin" required/>
+			<div style="display: inline-block;">
+			<input style="margin-left:-10px;" type="checkbox"id="remember-me"/>
+			<a  id="rem" style="font-size:0.5em;">Remember me</a>
+			</div>
+			<a style="margin-bottom:25px;margin-top:10px;font-size:0.45em" href="HTML/forgot-creditionals.html" target="_self">Forgot your Email/Password ?</a>
+			<button type ="button" onclick="getAccount()">Sign In</button>
+			<h6 id="invalid-id-password"></h6>
+		</form>
+	</div>
+
+	<div class="overlay-container">
+		<div class="overlay">
+			<div class="overlay-panel overlay-left">
+				<img class="create-icon" style="margin-bottom:20px;"src="IMAGES/login-logo.png" alt="">
+				<h1>Welcome Back !</h1>
+				<h5 style="color:black">If you already have an account ,<br> just get logged in.</h5>
+				<button class="ghost" id="signIn">Sign In</button>
+			</div>
+			<div class="overlay-panel overlay-right">
+				<img class="hey-icon" src="IMAGES/hey.png" alt="">
+				<h1>Hey , Friend !</h1>
+				<h5 style="color:black">Don't have an account ?<br> let's create one for you.</h5>
+				<button class="ghost" id="signUp">Sign Up</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+</body>
+<script type="text/javascript">
+
+
+</script>
+<noscript>Sorry Your Browser Does not Support JavaScript !!!</noscript>
+</html>
+

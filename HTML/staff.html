@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staff UI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white">
+  <div class="min-h-screen flex">
+    <!-- Sidebar -->
+    <aside class="w-72 bg-slate-900 text-white p-4">
+      <div class="text-lg font-extrabold mb-6 flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
+        Admin Panel
+      </div>
+<a href="./staff.html" class="hidden ...">Staff</a>
+      <div class="space-y-2"> 
+        </a>
+        <a href="./employees.html"
+           class="block w-full text-left px-4 py-3 rounded-xl font-semibold hover:bg-white/10 text-white/90">
+          Employee List
+        </a>
+        <a href="./workschedule.html"
+           class="block w-full text-left px-4 py-3 rounded-xl font-semibold hover:bg-white/10 text-white/90">
+          Work Schedule
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 p-8">
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <div class="text-3xl font-extrabold text-slate-900">Staff</div>
+          <div class="text-slate-600 mt-1">Add / Delete / Shift / Salary / Hour</div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-3 md:items-center">
+          <div class="flex gap-3 items-center">
+            <label class="text-sm font-bold text-slate-700">Tháng</label>
+            <input id="month" type="month"
+                   class="rounded-xl border border-slate-200 px-3 py-2 outline-none focus:ring-2 focus:ring-slate-900/10" />
+          </div>
+
+          <div class="flex gap-3 items-center">
+            <input id="q" placeholder="Search name / role..."
+                   class="w-64 rounded-xl border border-slate-200 px-4 py-2 outline-none focus:ring-2 focus:ring-slate-900/10" />
+            <button id="btnOpenAdd"
+                    class="px-5 py-2 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 active:scale-[0.99]">
+              + Add Staff
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="grid" class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+    </main>
+  </div>
+
+  <!-- Modal Add -->
+  <div id="modalAdd" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" data-close="add"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="w-full max-w-lg rounded-2xl bg-white shadow-xl border border-slate-200 p-6">
+        <div class="flex items-center justify-between gap-4">
+          <h2 class="text-xl font-extrabold text-slate-900">Add new staff</h2>
+          <button class="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100" data-close="add">✕</button>
+        </div>
+
+        <form id="formAdd" class="mt-4 space-y-4">
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-1">Name</label>
+            <input id="addName"
+                   class="w-full rounded-xl border border-slate-200 px-4 py-2 outline-none focus:ring-2 focus:ring-slate-900/10"
+                   placeholder="e.g. Nguyen Van A" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-1">Role</label>
+            <input id="addRole"
+                   class="w-full rounded-xl border border-slate-200 px-4 py-2 outline-none focus:ring-2 focus:ring-slate-900/10"
+                   placeholder="e.g. Waiter / Cook / Manager" />
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-bold text-slate-700 mb-1">Shift</label>
+              <select id="addShift"
+                      class="w-full rounded-xl border border-slate-200 px-4 py-2 outline-none focus:ring-2 focus:ring-slate-900/10">
+                <option value="Sáng">Sáng</option>
+                <option value="Chiều">Chiều</option>
+                <option value="Đêm">Đêm</option>
+                <option value="Full">Full</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-bold text-slate-700 mb-1">Salary / giờ (VND)</label>
+              <input id="addRate" type="number" min="0" step="1000"
+                     class="w-full rounded-xl border border-slate-200 px-4 py-2 outline-none focus:ring-2 focus:ring-slate-900/10"
+                     placeholder="e.g. 30000" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-1">Giờ làm (tháng đang chọn)</label>
+            <input id="addHours" type="number" min="0" step="0.5"
+                   class="w-full rounded-xl border border-slate-200 px-4 py-2 outline-none focus:ring-2 focus:ring-slate-900/10"
+                   placeholder="e.g. 120" />
+          </div>
+
+          <div class="flex justify-end gap-3 pt-2">
+            <button type="button" data-close="add"
+                    class="px-4 py-2 rounded-xl border border-slate-200 font-bold text-slate-700 hover:bg-slate-50">
+              Cancel
+            </button>
+            <button type="submit"
+                    class="px-4 py-2 rounded-xl bg-emerald-600 text-white font-extrabold hover:bg-emerald-700">
+              Add
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Hours (update giờ tháng) -->
+  <div id="modalHours" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" data-close="hours"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="w-full max-w-lg rounded-2xl bg-white shadow-xl border border-slate-200 p-6">
+        <div class="flex items-center justify-between gap-4">
+          <h2 class="text-xl font-extrabold text-slate-900">Cập nhật giờ làm theo tháng</h2>
+          <button class="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100" data-close="hours">✕</button>
+        </div>
+
+        <div class="mt-2 text-slate-600">
+          Nhân viên: <span id="hoursStaffName" class="font-bold text-slate-900"></span> —
+          Tháng: <span id="hoursMonth" class="font-bold text-slate-900"></span>
+        </div>
+
+        <form id="formHours" class="mt-4 space-y-4">
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-1">Giờ làm trong tháng</label>
+            <input id="hoursValue" type="number" min="0" step="0.5"
+                   class="w-full rounded-xl border border-slate-200 px-4 py-2 outline-none focus:ring-2 focus:ring-slate-900/10"
+                   placeholder="e.g. 120" />
+          </div>
+
+          <div class="flex justify-end gap-3 pt-2">
+            <button type="button" data-close="hours"
+                    class="px-4 py-2 rounded-xl border border-slate-200 font-bold text-slate-700 hover:bg-slate-50">
+              Cancel
+            </button>
+            <button type="submit"
+                    class="px-4 py-2 rounded-xl bg-slate-900 text-white font-extrabold hover:bg-slate-800">
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "staff_list_v2";
+
+    function safeUUID() {
+      if (window.crypto?.randomUUID) return crypto.randomUUID();
+      return Math.random().toString(16).slice(2) + Date.now().toString(16);
+    }
+
+    function fmtVND(n) {
+      const x = Number(n || 0);
+      return x.toLocaleString("vi-VN") + " ₫";
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function currentMonthValue() {
+      // YYYY-MM
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      return `${y}-${m}`;
+    }
+
+    const seed = [
+      { id: safeUUID(), name: "Tushar pankhaniya", role: "Manager", shift: "Full", rateVndPerHour: 50000, hoursByMonth: {} },
+      { id: safeUUID(), name: "rohit patel", role: "Cook", shift: "Sáng", rateVndPerHour: 35000, hoursByMonth: {} },
+      { id: safeUUID(), name: "Dipak", role: "Cook", shift: "Chiều", rateVndPerHour: 35000, hoursByMonth: {} },
+      { id: safeUUID(), name: "tirth", role: "Helper", shift: "Sáng", rateVndPerHour: 25000, hoursByMonth: {} },
+    ];
+
+    const els = {
+      month: document.getElementById("month"),
+      q: document.getElementById("q"),
+      grid: document.getElementById("grid"),
+
+      modalAdd: document.getElementById("modalAdd"),
+      btnOpenAdd: document.getElementById("btnOpenAdd"),
+      formAdd: document.getElementById("formAdd"),
+      addName: document.getElementById("addName"),
+      addRole: document.getElementById("addRole"),
+      addShift: document.getElementById("addShift"),
+      addRate: document.getElementById("addRate"),
+      addHours: document.getElementById("addHours"),
+
+      modalHours: document.getElementById("modalHours"),
+      hoursStaffName: document.getElementById("hoursStaffName"),
+      hoursMonth: document.getElementById("hoursMonth"),
+      formHours: document.getElementById("formHours"),
+      hoursValue: document.getElementById("hoursValue"),
+    };
+
+    let staff = [];
+    let selectedMonth = currentMonthValue();
+
+    // for hours modal
+    let editingStaffId = null;
+
+    function load() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) staff = JSON.parse(raw);
+        else staff = seed;
+      } catch {
+        staff = seed;
+      }
+    }
+
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(staff));
+    }
+
+    function openModal(which) {
+      if (which === "add") els.modalAdd.classList.remove("hidden");
+      if (which === "hours") els.modalHours.classList.remove("hidden");
+    }
+
+    function closeModal(which) {
+      if (which === "add") els.modalAdd.classList.add("hidden");
+      if (which === "hours") els.modalHours.classList.add("hidden");
+    }
+
+    function getHours(item, month) {
+      const h = item.hoursByMonth?.[month];
+      return Number(h || 0);
+    }
+
+    function calcPay(item, month) {
+      const rate = Number(item.rateVndPerHour || 0);
+      const hours = getHours(item, month);
+      return rate * hours;
+    }
+
+    function cardHtml(item) {
+      const hours = getHours(item, selectedMonth);
+      const pay = calcPay(item, selectedMonth);
+
+      return `
+        <div class="rounded-2xl bg-slate-100 shadow-sm border border-slate-200 p-6 flex flex-col justify-between min-h-[260px]">
+          <div class="flex flex-col items-center">
+            <div class="w-16 h-16 rounded-full bg-slate-900/10 flex items-center justify-center mb-4">
+              <svg viewBox="0 0 24 24" class="w-10 h-10" fill="currentColor" aria-hidden="true">
+                <path d="M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5Zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5Z"/>
+              </svg>
+            </div>
+
+            <div class="text-2xl font-extrabold text-slate-900 text-center leading-snug">${escapeHtml(item.name)}</div>
+            <div class="mt-1 text-slate-600 font-semibold">${escapeHtml(item.role)}</div>
+
+            <div class="mt-4 w-full text-sm text-slate-700 space-y-1">
+              <div class="flex justify-between"><span class="font-semibold">Ca</span><span>${escapeHtml(item.shift || "-")}</span></div>
+              <div class="flex justify-between"><span class="font-semibold">Lương/giờ</span><span>${fmtVND(item.rateVndPerHour)}</span></div>
+              <div class="flex justify-between"><span class="font-semibold">Giờ (${escapeHtml(selectedMonth)})</span><span>${hours}</span></div>
+              <div class="flex justify-between border-t border-slate-200 pt-2">
+                <span class="font-extrabold">Tạm tính</span>
+                <span class="font-extrabold">${fmtVND(pay)}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-5 grid grid-cols-2 gap-3">
+            <button data-hours="${item.id}"
+              class="px-3 py-2 rounded-lg bg-slate-900 text-white font-bold hover:bg-slate-800 active:scale-[0.99]">
+              Nhập giờ
+            </button>
+            <button data-del="${item.id}"
+              class="px-3 py-2 rounded-lg bg-red-600 text-white font-bold hover:bg-red-700 active:scale-[0.99]">
+              Delete
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function render() {
+      const s = els.q.value.trim().toLowerCase();
+      const filtered = !s ? staff : staff.filter(x =>
+        (x.name || "").toLowerCase().includes(s) ||
+        (x.role || "").toLowerCase().includes(s) ||
+        (x.shift || "").toLowerCase().includes(s)
+      );
+
+      els.grid.innerHTML = filtered.map(cardHtml).join("");
+
+      // bind delete
+      els.grid.querySelectorAll("button[data-del]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-del");
+          staff = staff.filter(x => x.id !== id);
+          save();
+          render();
+        });
+      });
+
+      // bind hours modal
+      els.grid.querySelectorAll("button[data-hours]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-hours");
+          const item = staff.find(x => x.id === id);
+          if (!item) return;
+
+          editingStaffId = id;
+          els.hoursStaffName.textContent = item.name || "";
+          els.hoursMonth.textContent = selectedMonth;
+          els.hoursValue.value = String(getHours(item, selectedMonth));
+          openModal("hours");
+        });
+      });
+    }
+
+    // init month
+    els.month.value = selectedMonth;
+    els.month.addEventListener("change", () => {
+      selectedMonth = els.month.value || currentMonthValue();
+      render();
+    });
+
+    // search
+    els.q.addEventListener("input", render);
+
+    // open add
+    els.btnOpenAdd.addEventListener("click", () => openModal("add"));
+
+    // close by data-close
+    document.querySelectorAll("[data-close]").forEach(el => {
+      el.addEventListener("click", () => {
+        const which = el.getAttribute("data-close");
+        closeModal(which);
+      });
+    });
+
+    // Add staff
+    els.formAdd.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const name = els.addName.value.trim();
+      const role = els.addRole.value.trim() || "Staff";
+      const shift = els.addShift.value;
+      const rate = Number(els.addRate.value || 0);
+      const hours = Number(els.addHours.value || 0);
+
+      if (!name) { els.addName.focus(); return; }
+      if (rate < 0 || hours < 0) return;
+
+      const item = {
+        id: safeUUID(),
+        name,
+        role,
+        shift,
+        rateVndPerHour: rate,
+        hoursByMonth: { [selectedMonth]: hours }
+      };
+
+      staff.unshift(item);
+      save();
+      render();
+
+      els.addName.value = "";
+      els.addRole.value = "";
+      els.addShift.value = "Sáng";
+      els.addRate.value = "";
+      els.addHours.value = "";
+      closeModal("add");
+    });
+
+    // Save hours for selected month
+    els.formHours.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!editingStaffId) return;
+
+      const hours = Number(els.hoursValue.value || 0);
+      if (hours < 0) return;
+
+      const item = staff.find(x => x.id === editingStaffId);
+      if (!item) return;
+
+      if (!item.hoursByMonth) item.hoursByMonth = {};
+      item.hoursByMonth[selectedMonth] = hours;
+
+      save();
+      render();
+      closeModal("hours");
+      editingStaffId = null;
+    });
+
+    // start
+    load();
+    save(); // ensure persist
+    render();
+  </script>
+<script>
+  // Redirect because Staff page is no longer used
+  window.location.replace("./employees.html");
+</script>
+
+</body>
+</html>

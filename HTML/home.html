@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Hotel Paradise</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="auhtor" content="harshil ramani" >
+<meta name="key words" content="Hotel-Room,Booking,Online,Best-Quality,Best-Service,India,Tour,5 Star,Food-Facilities" >
+<meta name="description" content="This Website is for online Hotel Room Booking ." >
+<meta name="viewport" content="width=device-width,intial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="refresh" content="120">
+<!-- META TAGS WILL BE HERE -->
+
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> <!--W3 CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"><!--W3 BOOTSTRAP-->
+
+<link rel="shortcut icon" href="../IMAGES/hotel-paradise.png" type="image/x-icon"><!-- WEB ICON -->
+
+<link rel="stylesheet" href="..\CSS\home.css"><!--CSS-->
+<script src="..\JS\home.js" type="text/javascript" defer="true"></script><!--JS-->
+<!-- <script src="..\JS\jQUERY\jquery-3.6.0.min.js"></script> jQuery -->
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"><!--W3 SLIDER BOOTSTRAP-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> <!--W3 SLIDER BOOTSTRAP-->
+
+<style>
+@font-face 
+{
+font-family: Poppins;
+src: url('..\\FONTS\\Poppins\\Poppins_Medium_500.ttf');
+font-family: SF Pro;
+src: url('..\\FONTS\\SF pro\\SFPRODISPLAYBOLD.OTF');
+}
+*,h1,h2,h3,h4,h5,h6
+{
+  font-family:"SF Pro";
+}
+body
+{
+  background-color:#00a8f6;
+  overflow-y: hidden; /* Hide vertical scrollbar */
+  overflow-x: hidden; /* Hide horizontal scrollbar */
+  font-family: "SF Pro","Poppins", "sans-serif";
+  font-size:16px;
+}
+.w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
+.w3-half img:hover{opacity:1}
+
+.mySlides {display:none}
+.w3-left, .w3-right, .w3-badge {cursor:pointer}
+.w3-badge {height:13px;width:13px;padding:0}
+.mySlides {display:none;border:5px inset rgb(98, 96, 96);}
+
+
+/* MEDIA QUERIES */
+
+/* Extra small devices (phones, 600px and down) */
+
+/* @media only screen and (max-width: 600px) {
+  #Roomsfacilities
+  {
+    
+  }
+} */
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+/* @media only screen and (min-width: 600px) {
+  #Roomsfacilities
+  {
+
+  }
+} */
+
+/* Medium devices (landscape tablets, 768px and up) */
+/* @media only screen and (min-width: 768px) {
+  #Roomsfacilities
+  {
+   
+  }
+}  */
+
+</style>
+
+</head>
+
+<body onload="setLoadingPage()">
+
+  <div class="loader">
+    <div class="circle one"></div>
+    <div class="circle two"></div>
+    <div class="circle three"></div>
+  </div>
+  <center><h1 class="animation-caption slideUp">Signing you in...</h1></center>
+  <!-- <br><img class="animation-caption slideUp" id="loading-icon" src="../IMAGES/star.png"alt=""> -->
+ 
+  <div id="actual-body">
+
+  <!-- Sidebar/menu -->
+<nav class="w3-sidebar w3-blue w3-collapse w3-top w3-large w3-padding w3-overflow-hidden" style="z-index:3;width:300px;font-weight:bold;overflow:hidden;" id="mySidebar"><br>
+  <a href="javascript:void(0)" onclick="navbar_close()" class="w3-button w3-hide-large w3-display-topleft" style="width:100%;font-size:22px"><img  style="height:30;width:30px;margin:auto;" src="../IMAGES/close_icon.png" alt="Close Menu"></a>
+  <div class="w3-container" >
+    <h3 class="w3-padding-10"><b><img style="margin-left:-10px;" src="../IMAGES/hotel-paradise.png"  height="250px" width="250px" alt=""></b></h3>
+  </div>
+  <div class="w3-bar-block" style="font-size:1.3em;">
+    <a href="#home" onclick="navbar_close()" class="w3-bar-item w3-button w3-hover-white">Home</a>
+    <a href="customerlist.html" onclick="navbar_close()" class="w3-bar-item w3-button w3-hover-white">Customer Management</a>
+    <a href="./staff.html" onclick="navbar_close()" class="w3-bar-item w3-button w3-hover-white">Staff Management</a>
+    <a href="#Roomsfacilities" onclick="navbar_close()" class="w3-bar-item w3-button w3-hover-white">Rooms & Facilities</a> 
+    <a href="#booknow" onclick="navbar_close()" class="w3-bar-item w3-button w3-hover-white">Book now</a> 
+    <a href="#feedback" onclick="navbar_close()" class="w3-bar-item w3-button w3-hover-white">Feedback</a> 
+    <a href="#aboutcontactus" onclick="navbar_close()" class="w3-bar-item w3-button w3-hover-white">About & Contact us</a>
+  </div>
+</nav>
+
+<!-- Top menu on small screens -->
+<header class="w3-container w3-top w3-hide-large w3-blue w3-xlarge w3-padding w3-overflow-hidden" style="white-space: nowrap;">
+  <a href="javascript:void(0)" class="w3-button w3-blue w3-margin-right" onclick="navbar_open()" style="padding:5px;">☰</a>
+  <span style="margin:auto;padding:5px;font-size:1.2em;font-weight: 600;">Hotel Paradise</span>
+  
+</header>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="navbar_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<div class="w3-main" style="margin-left:340px;margin-right:40px;">
+
+  <!-- Header -->
+  <div class="w3-container" style="margin-top:50px;">
+    <div id="anim">
+    <h1 class="w3-jumbo mytitle" id="home" style="font-family:'SF Pro';"><b style="margin-bottom:30px;font-size:0.65em;">Hey , <b style="color:green;" id="Home-Name" ></b><br><span>Planning for Tour ,</span><br><span>Don't worry !</span></b></h1>
+    </div>
+    <span style="float:right;margin-top:-40px;" class="fade-in" >
+      <img src="../IMAGES/idea.png" alt="" id="dashboard-image">
+    </span>
+
+  </div>
+  <center><h1 class="w3-xxxmedium animate-charcter"><b style="margin:auto;" >" We Provides The Best Hotel Rooms across VietNam "</b></h1></center>
+  
+  <!-- <hr style="width:1050px;background-color:black;border:3px solid rgb(5, 5, 5)" class="w3-roundw3-black">  -->
+
+  <div class="content" style="margin-top:40px;margin-left:10px;margin-right:10px;border:5px solid black;">
+    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <button name="slidebutton" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
+          aria-current="true" aria-label="Slide 1"></button>
+        <button name="slidebutton"  type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+          aria-label="Slide 2"></button>
+        <button name="slidebutton" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
+          aria-label="Slide 3"></button>
+        <button name="slidebutton"  type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3"
+          aria-label="Slide 4"></button>
+        <button name="slidebutton"  type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="4"
+          aria-label="Slide 5"></button>         
+        <button name="slidebutton"  type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="5"
+          aria-label="Slide 6"></button>
+        <button name="slidebutton"  type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="6"
+          aria-label="Slide 7"></button>
+        <button name="slidebutton" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="7"
+          aria-label="Slide 8"></button>
+      </div>
+
+      <div class="carousel-inner">
+        
+        <div class="carousel-item active" >
+          <img src="../IMAGES/image8.avif" id="active-image" class="d-block w-100" alt="">
+          <div class="carousel-caption d-none d-md-block">
+          </div>
+        </div>
+
+        <div class="carousel-item">
+          <img src="../IMAGES/image9.jpg" class="d-block w-100" alt="">
+          <div class="carousel-caption d-none d-md-block">
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img src="../IMAGES/image5.jpg" class="d-block w-100" alt="">
+          <div class="carousel-caption d-none d-md-block">
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img src="../IMAGES/image6.jpg" class="d-block w-100" alt="">
+          <div class="carousel-caption d-none d-md-block">
+          </div>
+        </div>
+
+        <div class="carousel-item">
+          <img src="../IMAGES/image10.jpg" class="d-block w-100" alt="">
+          <div class="carousel-caption d-none d-md-block">
+          </div>
+        </div>
+      
+        <div class="carousel-item">
+          <img src="../IMAGES/image14_B.jpg" class="d-block w-100" alt="">
+          <div class="carousel-caption d-none d-md-block">
+          </div>
+        </div>
+
+      <div class="carousel-item">
+          <img src="../IMAGES/image15.jpg" class="d-block w-100" alt="">
+          <div class="carousel-caption d-none d-md-block">
+          </div>
+      </div>
+
+      <div class="carousel-item">
+          <img src="../IMAGES/image16.jpg" class="d-block w-100" alt="">
+          <div class="carousel-caption d-none d-md-block">
+          </div>
+      </div>
+
+      </div>
+
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+        data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+        data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+
+    </div>
+    </div>
+
+
+  <!-- Modal for full size images on click-->
+  <div id="modal01" class="w3-modal w3-black" style="padding-top:25px" onclick="this.style.display='none'">
+    <span class="w3-button w3-black w3-xxlarge w3-display-topright">×</span>
+    <div class="w3-modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">
+      <img id="img01" class="w3-image">
+      <p id="caption"></p>
+    </div>
+  </div>
+
+  <!-- Rooms and Facilities -->
+  <div class="w3-container" id="Roomsfacilities" style="margin-top:40px">
+    <h1 class="w3-xxxlarge w3-text-Black"><b>Rooms & Facilities</b></h1>
+    <hr style="width:430px;background-color:black;border:3px solid rgb(5, 5, 5)" class="w3-roundw3-black"> 
+     
+    <div class="w3-row-padding" >
+      <div class="w3-half">
+        <img class="imageborder" src="../IMAGES/image1.jpg" style="width:100%" onclick="showFullImage(this)" alt="">
+        <img class="imageborder" src="../IMAGES/image2.jpg" style="width:100%" onclick="showFullImage(this)" alt="">
+        <img class="imageborder" src="../IMAGES/image3.jpg" style="width:100%" onclick="showFullImage(this)" alt="">
+      </div>
+  
+      <div class="w3-half">
+        <img class="imageborder" src="../IMAGES/image11.jpg" style="width:100%" onclick="showFullImage(this)" alt="">
+        <img class="imageborder" src="../IMAGES/image12.jpg" style="width:100%" onclick="showFullImage(this)" alt="">
+        <img class="imageborder" src="../IMAGES/image13.jpg" style="width:100%" onclick="showFullImage(this)" alt="">
+      </div>
+    </div>
+
+  </div>
+  
+  <!-- Packages / Pricing Tables -->
+  <div class="w3-container" id="booknow" style="margin-top:75px">
+    <h1 class="w3-xxxlarge w3-text-black"><b>Packages </b></h1>
+    <hr style="width:230px;background-color:black;border:3px solid rgb(5, 5, 5)" class="w3-roundw3-black"> 
+    <h3 style="font-family:'SF Pro';">We are providing Hotel Rooms in variety of Packages Listed Below. Each and every package contains Safe and Clean Rooms with Sufficient Facilities. <span style="font-weight:bold;color:rgb(8, 133, 25);"> 24 * 7 Hotel Staff Support Available. </span></h3>
+  </div>
+   <br>
+  <div class="w3-row-padding">
+
+    <div class="w3-half w3-margin-bottom">
+      <ul class="w3-ul w3-light-grey w3-center">
+        <li class="w3-grey w3-xlarge w3-padding-32">Silver</li>
+        <li class="w3-padding-16">1 BHK Room</li>
+        <li class="w3-padding-16">24 hours Stay & support</li>
+        <li class="w3-padding-16">NON A.C.</li>
+        <li class="w3-padding-16">Breakfast Included</li>
+        <li class="w3-padding-16">20% Discount on Advance Booking</li>
+        <li class="w3-padding-16">
+          <h2>$ 75</h2>
+          <span class="w3-opacity">per room</span>
+        </li>
+        <li class="w3-light-grey w3-padding-24">
+          <button type="button" id="Silver" class="w3-button w3-green w3-padding-large w3-hover-black">Book now</button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="w3-half w3-margin-bottom">
+      <ul class="w3-ul w3-light-grey w3-center">
+        <li class="w3-orange w3-xlarge w3-padding-32">Gold</li>
+        <li class="w3-padding-16">2 BHK Room</li>
+        <li class="w3-padding-16">48 hours Stay & support</li>
+        <li class="w3-padding-16">A.C.</li>
+        <li class="w3-padding-16">Breakfast & Dinner Included</li>
+        <li class="w3-padding-16">30% Discount on Advance Booking</li>
+        <li class="w3-padding-16">
+          <h2>$ 100</h2>
+          <span class="w3-opacity">per room</span>
+        </li>
+        <li class="w3-light-grey w3-padding-24">
+          <button type="button"  id="Gold" class="w3-button w3-green w3-padding-large w3-hover-black">Book now</button>
+        </li>
+      </ul>
+    </div>
+        
+    <div class="w3-half">
+      <ul class="w3-ul w3-light-grey w3-center">
+        <li class="w3-light-blue w3-xlarge w3-padding-32">Delux</li>
+        <li class="w3-padding-16">4 BHK Room</li>
+        <li class="w3-padding-16"> 72 hours Stay & support</li>
+        <li class="w3-padding-16">A.C. & Heater</li>
+        <li class="w3-padding-16">Breakfast & Lunch & Dinner Included</li>
+        <li class="w3-padding-16">25% Discount on Advance Booking</li>
+        <li class="w3-padding-16">
+          <h2>$ 150</h2>
+          <span class="w3-opacity">per room</span>
+        </li>
+        <li class="w3-light-grey w3-padding-24">
+          <button type="button" id="Delux" class="w3-button w3-green w3-padding-large w3-hover-black">Book now</button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="w3-half">
+      <ul class="w3-ul w3-light-grey w3-center">
+        <li class="w3-light-green w3-xlarge w3-padding-32">Platinum</li>
+        <li class="w3-padding-16">4 BHK Room & All Facilities</li>
+        <li class="w3-padding-16">  1 Week Stay & support</li>
+        <li class="w3-padding-16">A.C. & Heater & Electronics Component</li>
+        <li class="w3-padding-16">Breakfast & Lunch & Dinner & Fast food Included</li>
+        <li class="w3-padding-16">20% Discount on Advance Booking</li>
+        <li class="w3-padding-16">
+          <h2>$ 200</h2>
+          <span class="w3-opacity">per room</span>
+        </li>
+        <li class="w3-light-grey w3-padding-24">
+          <button type="button" id="Platinum" class="w3-button w3-green w3-padding-large w3-hover-black">Book now</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Feedback -->
+  
+  <div class="w3-container" id="feedback" style="margin-top:75px">
+    <h1 class="w3-xxxlarge w3-text-black"><b>Feedback</b></h1>
+    <hr style="width:230px;background-color:black;border:3px solid rgb(5, 5, 5)" class="w3-roundw3-black"> 
+    <h3 style="font-family:'SF Pro';">We are very Happy that You are writing to us , We are taking our Customer's Feedback very Seriously so ,<span> Please Tell us About Our Services So that We can make it Better to Improve Your Next Stay.</span></h3>
+    <form>
+      <div class="w3-section">
+        <label>Name</label>
+        <input class="w3-input w3-border" type="text" name="Name" required>
+      </div>
+      <div class="w3-section">
+        <label>Email</label>
+        <input class="w3-input w3-border" type="text" name="Email" required>
+      </div>
+      <div class="w3-section">
+        <label>Message</label>
+        <input class="w3-input w3-border" type="text" name="Message" required>
+      </div>
+      <br>
+      <button type="button" onclick="feedbackMsg()" class="w3-button w3-block w3-padding-large w3-blue w3-margin-bottom">Send</button>
+      <center><h6 id="feedback-record"></h6></center>
+    </form>  
+  </div>
+
+  <!-- About us & Contact -->
+  
+  <div class="w3-container" id="aboutcontactus" style="margin-top:75px" >
+    <h1 class="w3-xxxlarge w3-text-black"><b>About & Contact Us</b></h1>
+    <br>
+    <hr style="width:470px;background-color:black;margin-top:-20px;border:3px solid rgb(5, 5, 5)" class="w3-roundw3-black"> 
+    
+    <div class="w3-padding-50 w3-content w3-text-black" id="contact">
+      <!-- <hr style="width:200px" class="w3-opacity"> -->
+      <div class="w3-section">
+        <p><i class="fa fa-map-marker fa-fw w3-text-black w3-xxlarge w3-margin-right"></i> Hanoi, VietNam.</p>
+        <p><i class="fa fa-phone fa-fw w3-text-black w3-xxlarge w3-margin-right"></i> Phone: +91 97272 12345</p>
+        <p><i class="fa fa-envelope fa-fw w3-black-white w3-xxlarge w3-margin-right"> </i> Email: hotelparadise@gmail.com</p>
+      </div>
+    </div>
+    <footer class="w3-content w3-padding-0 w3-text-black" style="font-size: 2.2em" align="center">
+      <i class="fa fa-facebook-official w3-hover-opacity"></i>
+      <i class="fa fa-instagram w3-hover-opacity"></i>
+      <i class="fa fa-snapchat w3-hover-opacity"></i>
+      <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+      <i class="fa fa-twitter w3-hover-opacity"></i>
+      <i class="fa fa-linkedin w3-hover-opacity"></i>
+      <br>
+      <a href="https://github.com/vuphan04" target="_blank" class="w3-hover-text-green"><p class="w3-medium animate-charcter2">©️ Copyright 2025 Huy Phan</p></a>
+    <!-- End footer -->
+      </footer>
+  </div>
+
+<!-- End page content -->
+
+</div>
+
+</div>
+
+<script type="text/javascript">
+
+  function setLoadingPage()
+  {
+
+    setTimeout(function(){
+
+      document.getElementById("actual-body").style.display = "block";
+      document.getElementById("Home-Name").innerHTML = localStorage.getItem("Name");
+      document.getElementsByClassName("loader")[0].style.display = "none";
+      document.getElementsByClassName("animation-caption")[0].style.display = "none";
+      document.getElementsByTagName("body")[0].style.backgroundColor="white";      
+    },4000);
+	  
+  }
+
+</script>
+<noscript>Sorry Your Browser Does not Support JavaScript !!!</noscript>
+</body>
+</html>

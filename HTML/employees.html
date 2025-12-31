@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employee List</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #ffffff; }
+  </style>
+</head>
+<body class="bg-white">
+  <div class="min-h-screen flex">
+    <!-- Sidebar -->
+    <aside class="w-72 bg-slate-900 text-white p-4">
+      <div class="text-lg font-extrabold mb-6 flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
+        Admin Panel
+      </div>
+      <div class="space-y-2">
+        <a href="./staff.html"
+           class="block w-full text-left px-4 py-3 rounded-xl font-semibold hover:bg-white/10 text-white/90">
+          Staff
+        </a>
+        <a href="./employees.html"
+           class="block w-full text-left px-4 py-3 rounded-xl font-semibold bg-blue-600">
+          Employee List
+        </a>
+        <a href="./workschedule.html"
+           class="block w-full text-left px-4 py-3 rounded-xl font-semibold hover:bg-white/10 text-white/90">
+          Work Schedule
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 p-8 bg-gray-50">
+      <div class="max-w-6xl">
+        <div class="flex items-center justify-between">
+          <h1 class="text-[13px] font-bold text-gray-900">Employee List</h1>
+          <button id="btnOpenAdd"
+            class="rounded bg-purple-700 px-4 py-2 text-[11px] font-bold text-white hover:bg-purple-800">
+            Add New Employee
+          </button>
+        </div>
+
+        <div class="mt-4 rounded-md bg-white border border-gray-100 shadow-sm overflow-hidden">
+          <div class="overflow-auto">
+            <table class="min-w-full text-[11px]">
+              <thead class="bg-white">
+                <tr class="text-gray-400 uppercase tracking-wider">
+                  <th class="px-4 py-3 text-left font-bold w-[20%]">NAME</th>
+                  <th class="px-4 py-3 text-left font-bold w-[16%]">POSITION</th>
+                  <th class="px-4 py-3 text-left font-bold w-[26%]">EMAIL</th>
+                  <th class="px-4 py-3 text-left font-bold w-[16%]">PHONE</th>
+                  <th class="px-4 py-3 text-left font-bold w-[12%]">SALARY</th>
+                  <th class="px-4 py-3 text-left font-bold w-[10%]">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="tbody" class="divide-y divide-gray-100"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 z-50 hidden">
+    <div id="backdrop" class="absolute inset-0 bg-black/30"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="w-full max-w-lg rounded-lg bg-white border border-gray-200 shadow-xl p-5">
+        <div class="flex items-center justify-between gap-3">
+          <h2 id="modalTitle" class="text-[13px] font-bold text-gray-900">Add New Employee</h2>
+          <button id="btnClose" class="rounded px-2 py-1 text-gray-600 hover:bg-gray-100">✕</button>
+        </div>
+
+        <form id="form" class="mt-4 space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">Name</label>
+              <input id="name"
+                class="w-full rounded border border-gray-200 px-3 py-2 text-[12px] outline-none focus:ring-2 focus:ring-purple-200" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">Position</label>
+              <input id="position"
+                class="w-full rounded border border-gray-200 px-3 py-2 text-[12px] outline-none focus:ring-2 focus:ring-purple-200" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">Email</label>
+              <input id="email" type="email"
+                class="w-full rounded border border-gray-200 px-3 py-2 text-[12px] outline-none focus:ring-2 focus:ring-purple-200" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">Phone</label>
+              <input id="phone"
+                class="w-full rounded border border-gray-200 px-3 py-2 text-[12px] outline-none focus:ring-2 focus:ring-purple-200" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold text-gray-600 mb-1">Salary (USD)</label>
+            <input id="salary" type="number" min="0" step="0.01"
+              class="w-full rounded border border-gray-200 px-3 py-2 text-[12px] outline-none focus:ring-2 focus:ring-purple-200"
+              placeholder="e.g. 850" />
+          </div>
+
+          <div class="flex justify-end gap-2 pt-2">
+            <button type="button" id="btnCancel"
+              class="rounded border border-gray-200 px-4 py-2 text-[11px] font-bold text-gray-700 hover:bg-gray-50">
+              Cancel
+            </button>
+            <button type="submit"
+              class="rounded bg-purple-700 px-4 py-2 text-[11px] font-bold text-white hover:bg-purple-800">
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "employees_list_like_screenshot_v3";
+
+    function safeUUID() {
+      if (window.crypto?.randomUUID) return crypto.randomUUID();
+      return Math.random().toString(16).slice(2) + Date.now().toString(16);
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function moneyUSD(n) {
+      const x = Number(n || 0);
+      return "$" + x.toFixed(2);
+    }
+
+    const seed = [
+      { id: safeUUID(), name: "Nguyen Van An", position: "Receptionist", email: "an.nguyen@example.com", phone: "0901122334", salary: 850 },
+      { id: safeUUID(), name: "Tran Thi Bich", position: "Manager", email: "bich.tran@example.com", phone: "0912345678", salary: 1500 },
+      { id: safeUUID(), name: "Le Van Cuong", position: "Security", email: "cuong.le@example.com", phone: "0923456789", salary: 700 },
+      { id: safeUUID(), name: "Pham Thi Dung", position: "Housekeeping", email: "dung.pham@example.com", phone: "0934567890", salary: 800 },
+      { id: safeUUID(), name: "Hoang Minh Duc", position: "Manager", email: "duc.hoang@example.com", phone: "0945678901", salary: 1550 },
+      { id: safeUUID(), name: "Vo Thi Em", position: "Receptionist", email: "em.vo@example.com", phone: "0956789012", salary: 900 },
+      { id: safeUUID(), name: "Dang Van Giau", position: "Other", email: "giau.dang@example.com", phone: "0967890123", salary: 950 },
+      { id: safeUUID(), name: "Nguyen Thi Hoa", position: "Housekeeping", email: "hoa.nguyen@example.com", phone: "0978901234", salary: 820 },
+      { id: safeUUID(), name: "Tran Van Ich", position: "Security", email: "ich.tran@example.com", phone: "0989012345", salary: 720 },
+    ];
+
+    const els = {
+      tbody: document.getElementById("tbody"),
+      btnOpenAdd: document.getElementById("btnOpenAdd"),
+      modal: document.getElementById("modal"),
+      backdrop: document.getElementById("backdrop"),
+      btnClose: document.getElementById("btnClose"),
+      btnCancel: document.getElementById("btnCancel"),
+      modalTitle: document.getElementById("modalTitle"),
+      form: document.getElementById("form"),
+      name: document.getElementById("name"),
+      position: document.getElementById("position"),
+      email: document.getElementById("email"),
+      phone: document.getElementById("phone"),
+      salary: document.getElementById("salary"),
+    };
+
+    let employees = [];
+    let editId = null;
+
+    function load() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        employees = raw ? JSON.parse(raw) : seed;
+      } catch {
+        employees = seed;
+      }
+    }
+
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(employees));
+    }
+
+    function openModal(mode) {
+      els.modal.classList.remove("hidden");
+      els.modalTitle.textContent = mode === "edit" ? "Edit Employee" : "Add New Employee";
+      setTimeout(() => els.name.focus(), 0);
+    }
+
+    function closeModal() {
+      els.modal.classList.add("hidden");
+      editId = null;
+      els.form.reset();
+    }
+
+    function rowHtml(e) {
+      return `
+        <tr>
+          <td class="px-4 py-3 font-bold text-gray-900">${escapeHtml(e.name)}</td>
+          <td class="px-4 py-3 font-bold text-gray-800">${escapeHtml(e.position)}</td>
+          <td class="px-4 py-3 text-gray-800">${escapeHtml(e.email)}</td>
+          <td class="px-4 py-3 text-gray-800">${escapeHtml(e.phone)}</td>
+          <td class="px-4 py-3 text-gray-800">${moneyUSD(e.salary)}</td>
+          <td class="px-4 py-3">
+            <button data-edit="${e.id}" class="text-purple-700 font-bold hover:underline">Edit</button>
+            <span class="mx-2"></span>
+            <button data-del="${e.id}" class="text-red-600 font-bold hover:underline">Delete</button>
+          </td>
+        </tr>
+      `;
+    }
+
+    function render() {
+      els.tbody.innerHTML = employees.map(rowHtml).join("");
+
+      els.tbody.querySelectorAll("button[data-edit]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-edit");
+          const e = employees.find(x => x.id === id);
+          if (!e) return;
+
+          editId = id;
+          els.name.value = e.name || "";
+          els.position.value = e.position || "";
+          els.email.value = e.email || "";
+          els.phone.value = e.phone || "";
+          els.salary.value = String(e.salary ?? "");
+          openModal("edit");
+        });
+      });
+
+      els.tbody.querySelectorAll("button[data-del]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-del");
+          employees = employees.filter(x => x.id !== id);
+          save();
+          render();
+        });
+      });
+    }
+
+    els.btnOpenAdd.addEventListener("click", () => {
+      editId = null;
+      els.form.reset();
+      openModal("add");
+    });
+
+    els.btnClose.addEventListener("click", closeModal);
+    els.btnCancel.addEventListener("click", closeModal);
+    els.backdrop.addEventListener("click", closeModal);
+
+    els.form.addEventListener("submit", (ev) => {
+      ev.preventDefault();
+
+      const name = els.name.value.trim();
+      const position = els.position.value.trim();
+      const email = els.email.value.trim();
+      const phone = els.phone.value.trim();
+      const salary = Number(els.salary.value || 0);
+
+      if (!name) { els.name.focus(); return; }
+
+      if (editId) {
+        const idx = employees.findIndex(x => x.id === editId);
+        if (idx >= 0) employees[idx] = { ...employees[idx], name, position, email, phone, salary };
+      } else {
+        employees.push({ id: safeUUID(), name, position, email, phone, salary });
+      }
+
+      save();
+      render();
+      closeModal();
+    });
+
+    load();
+    save();
+    render();
+  </script>
+</body>
+</html>

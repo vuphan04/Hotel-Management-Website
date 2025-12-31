@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Room Booking | Hotel Paradise</title>
+        <meta name="auhtor" content="harshil ramani" >
+        <meta name="key words" content="Hotel-Room,Booking,Online,Best-Quality,Best-Service,India,Tour,5 Star,Food-Facilities" >
+        <meta name="description" content="This Website is for online Hotel Room Booking ." >
+        <meta name="viewport" content="width=device-width,intial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="refresh" content="120">
+
+        <link rel="stylesheet" href="../CSS/booking.css"><!--CSS-->
+        <script src="../JS/booking.js" type="text/javascript" defer="true"></script><!--JS-->
+        
+        <link rel="shortcut icon" href="../IMAGES/hotel-paradise.png" type="image/x-icon">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous"> <!--BOOTSTRAP-->
+        <style type="text/css">
+
+        /*-------------------font face----------------------*/
+
+        @font-face 
+        {
+        font-family: 'Poppins';
+        src: url('..\\FONTS\\Poppins\\Poppins_Medium_500.ttf');
+        font-family: 'SF Pro';
+        src: url('..\\FONTS\\SF pro\\SFPRODISPLAYBOLD.OTF');
+        }
+        *
+        {
+            font-family: 'SF Pro';
+        }
+        /*--------------------------------------------------*/
+    
+        </style>
+    </head>
+    
+    <body onload="getAccountData()">
+        <div class="testbox">
+            <form action="/" onreset="getAccountData()">
+
+              <center><img style="margin:auto;" src="../IMAGES/hotel-paradise.png"  height="200px" width="200px" alt=""><h5 style="font-size:5vh;margin:5px;">Hotel Room&nbsp;Booking</h1></center>
+              <h4>Name : </h4>
+              <div class="name">
+                <input id="name" type="text" name="name" placeholder="Full name" />
+              </div>
+              <h4>Email : </h4>
+              <input  id="email" type="email" name="name" placeholder="someone@example.com" />
+              <h4>Hotel venue : </h4>
+              <select id="hotel-venue">
+                <option value="" selected>Select Hotel Venue</option>
+                <option value="Ha noi">Ha noi</option>
+                <option value="Quang Ninh">Quang Ninh</option>
+                <option value="Thanh Hoa">Thanh Hoa</option>
+                <option value="Hoi An">Hoi An</option>
+                <option value="Quang Binh">Quang Binh</option>
+                <option value="T.p Ho Chi Minh">T.p Ho Chi Minh</option>
+                <option value="Nha Trang">Nha Trang</option>
+                <option value="Khanh Hoa">Khanh Hoa</option>
+              </select>
+              <h4>Packages :</h4>
+              <select id="packageType" onchange="setAmt()">
+                <option value="1">Silver</option>
+                <option value="2">Gold</option>
+                <option value="3">Delux</option>
+                <option value="4">Platinum</option>
+              </select>
+              <h4>Number of rooms : </h4>
+              <select id="numOfRooms" onchange="setAmt()">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+              <h4>Number of Guests : </h4>
+              <select id="noOfGuests">
+                <option value="" selected>Select Number of Guests</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="5+ ( Maximum 10 per room)">More than 5</option>
+              </select>
+              <h4>Date to be Booked : </h4>
+              <div class="day-visited">
+                <input onblur="setMinBookTime()" type="date" id="booking-date" name="dayvisited" required/>
+                <i class="fas fa-calendar-alt"></i>
+              </div>
+              <h4>Time of Arrival : </h4>
+              <div class="time-visited">
+                <input type="time" id="booking-time" min="00:00" name="timevisited" required/>
+              </div>
+              <h4>Parking Facilities : </h4>
+              <div class="question-answer">
+                <label><input type="radio" value="Yes" name="Parking" /> Yes</label>
+                <label><input type="radio" value="No" name="Parking" checked/> No</label>
+              </div>
+              <h4>Tax (12%) : </h4>
+              <div class="name">
+                <input id="Tax" type="text" name="taxamount" placeholder="Tax value ₹" readonly/>
+              </div>
+              <h4>Total Payable Amount : </h4>
+              <div class="name">
+                <input id="totalamount" type="text" name="totalamount" placeholder="Total amount ₹" readonly/>
+              </div>
+               <!-- <h4>Untitled</h4>
+              <table>
+                <tr>
+                  <th class="first-col"></th>
+                  <th>Amazing</th>
+                  <th>Good</th>
+                  <th>Decent</th>
+                  <th>Disappointing</th>
+                </tr>
+                <tr>
+                  <td class="first-col">Food Quality</td>
+                  <td><input type="radio" value="none" name="Food" /></td>
+                  <td><input type="radio" value="none" name="Food" /></td>
+                  <td><input type="radio" value="none" name="Food" /></td>
+                  <td><input type="radio" value="none" name="Food" /></td>
+                </tr>
+                <tr>
+                  <td class="first-col">Overall Service Quality</td>
+                  <td><input type="radio" value="none" name="Service" /></td>
+                  <td><input type="radio" value="none" name="Service" /></td>
+                  <td><input type="radio" value="none" name="Service" /></td>
+                  <td><input type="radio" value="none" name="Service" /></td>
+                </tr>
+                <tr>
+                  <td class="first-col">Speed of Service</td>
+                  <td><input type="radio" value="none" name="Speed" /></td>
+                  <td><input type="radio" value="none" name="Speed" /></td>
+                  <td><input type="radio" value="none" name="Speed" /></td>
+                  <td><input type="radio" value="none" name="Speed" /></td>
+                </tr>
+                <tr>
+                  <td class="first-col">Price</td>
+                  <td><input type="radio" value="none" name="Price" /></td>
+                  <td><input type="radio" value="none" name="Price" /></td>
+                  <td><input type="radio" value="none" name="Price" /></td>
+                  <td><input type="radio" value="none" name="Price" /></td>
+                </tr>
+                <tr>
+                  <td class="first-col">Overall Experience</td>
+                  <td><input type="radio" value="none" name="Experience" /></td>
+                  <td><input type="radio" value="none" name="Experience" /></td>
+                  <td><input type="radio" value="none" name="Experience" /></td>
+                  <td><input type="radio" value="none" name="Experience" /></td>
+                </tr>
+              </table>  -->
+              <h4>Any Special Instructions for us ?</h4>
+              <textarea rows="5" style="resize: none;" id="instructions" placeholder="Please mention if any special services you want from us at arrival time (*extra charges may apply on checkout)"></textarea>
+              <div class="btn-block">
+                <button type="button" onclick="proccedToPayment()">Make Payment</button>
+                <button style="margin:10px;" type="reset">Clear</button>
+              </div>
+            </form>
+          </div>
+    </body>
+    
+    <script type="text/javascript">
+     
+
+     
+      
+    </script>
+    <noscript>Sorry Your Browser Does not Support JavaScript !!!</noscript>
+</html>
+

@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Work Schedule</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body{background:#f3f4f6;}
+    .card-shadow{box-shadow:0 1px 2px rgba(0,0,0,.06);}
+  </style>
+</head>
+<body class="text-gray-900">
+
+  <div class="min-h-screen flex">
+    <!-- Sidebar -->
+    <aside class="w-72 bg-slate-900 text-white p-4">
+      <div class="text-lg font-extrabold mb-6 flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
+        Admin Panel
+      </div>
+
+      <div class="space-y-2">
+        <a href="./staff.html"
+           class="block w-full text-left px-4 py-3 rounded-xl font-semibold hover:bg-white/10 text-white/90">
+          Staff
+        </a>
+        <a href="./employees.html"
+           class="block w-full text-left px-4 py-3 rounded-xl font-semibold hover:bg-white/10 text-white/90">
+          Employee List
+        </a>
+        <a href="./workschedule.html"
+           class="block w-full text-left px-4 py-3 rounded-xl font-semibold bg-blue-600">
+          Work Schedule
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 p-8">
+      <div class="max-w-6xl mx-auto">
+<div class="flex items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-extrabold">Work Schedule</h1>
+        <p class="text-sm text-gray-600 mt-1">Add work schedules by day/shift (Morning/Afternoon/Night) + save by month.</p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <label class="text-sm font-bold text-gray-700">Month</label>
+        <input id="month" type="month"
+               class="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-200" />
+      </div>
+    </div>
+
+    <!-- Add form -->
+    <section class="mt-6 rounded-xl bg-white border border-gray-100 card-shadow p-5">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-extrabold text-gray-900">Add schedule</h2>
+        <div class="text-xs text-gray-500">Data stored in the browser (localStorage)</div>
+      </div>
+
+      <form id="form" class="mt-4 grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+        <div class="md:col-span-3">
+          <label class="block text-xs font-bold text-gray-600 mb-1">Date</label>
+          <input id="date" type="date"
+                 class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-200" />
+        </div>
+
+        <div class="md:col-span-3">
+          <label class="block text-xs font-bold text-gray-600 mb-1">Employee</label>
+          <select id="employee"
+                  class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-200"></select>
+          <p id="empHint" class="text-[11px] text-gray-500 mt-1 hidden">
+            No employee list found — you can enter names in the box below.
+          </p>
+          <input id="employeeText" placeholder="Nhập tên nhân viên..."
+                 class="w-full mt-2 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-200 hidden" />
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-xs font-bold text-gray-600 mb-1">Shift</label>
+          <select id="shift"
+                  class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-200">
+            <option value="Morning">Morning</option>
+            <option value="Afternoon">Afternoon</option>
+            <option value="Night">Night</option>
+            <option value="Full">Full</option>
+          </select>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-xs font-bold text-gray-600 mb-1">Hours</label>
+          <input id="hours" type="number" min="0" step="0.5" placeholder="e.g. 8"
+                 class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-200" />
+        </div>
+
+        <div class="md:col-span-2">
+          <button type="submit"
+                  class="w-full rounded-lg bg-purple-700 px-4 py-2 text-sm font-bold text-white hover:bg-purple-800">
+            Add
+          </button>
+        </div>
+
+        <div class="md:col-span-12">
+          <label class="block text-xs font-bold text-gray-600 mb-1">Note (optional)</label>
+          <input id="note" placeholder="Note..."
+                 class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-200" />
+        </div>
+      </form>
+    </section>
+
+    <!-- List -->
+    <section class="mt-6 rounded-xl bg-white border border-gray-100 card-shadow overflow-hidden">
+      <div class="px-5 py-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <h2 class="text-sm font-extrabold">Schedule list</h2>
+        <div class="flex items-center gap-3">
+          <input id="q" placeholder="Search employee / shift / note..."
+                 class="w-72 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-200" />
+          <button id="btnExport"
+                  class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-bold text-gray-800 hover:bg-gray-50">
+            Export CSV
+          </button>
+          <button id="btnClearMonth"
+                  class="rounded-lg border border-red-200 px-4 py-2 text-sm font-bold text-red-700 hover:bg-red-50">
+            Clear month
+          </button>
+        </div>
+      </div>
+
+      <div class="overflow-auto">
+        <table class="min-w-full text-sm">
+          <thead class="bg-gray-50 text-gray-600">
+            <tr>
+              <th class="px-5 py-3 text-left font-bold">DATE</th>
+              <th class="px-5 py-3 text-left font-bold">EMPLOYEE</th>
+              <th class="px-5 py-3 text-left font-bold">SHIFT</th>
+              <th class="px-5 py-3 text-left font-bold">HOURS</th>
+              <th class="px-5 py-3 text-left font-bold">NOTE</th>
+              <th class="px-5 py-3 text-left font-bold">ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody id="tbody" class="divide-y divide-gray-100"></tbody>
+        </table>
+      </div>
+
+      <div id="empty" class="px-5 py-6 text-sm text-gray-500 hidden">
+        There is no schedule for this month yet.
+      </div>
+    </section>
+
+      </div>
+    </main>
+  </div>
+
+<!-- Edit Modal -->
+  <div id="modal" class="fixed inset-0 z-50 hidden">
+    <div id="backdrop" class="absolute inset-0 bg-black/30"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="w-full max-w-lg rounded-xl bg-white border border-gray-200 card-shadow p-6">
+        <div class="flex items-center justify-between gap-3">
+          <h3 class="text-base font-extrabold">Edit schedule</h3>
+          <button id="btnClose" class="rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100">✕</button>
+        </div>
+
+        <form id="formEdit" class="mt-4 space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1">Date</label>
+              <input id="editDate" type="date"
+                     class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-200" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1">Shift</label>
+              <select id="editShift"
+                      class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-200">
+                <option value="Morning">Morning</option>
+                <option value="Afternoon">Afternoon</option>
+                <option value="Night">Night</option>
+                <option value="Full">Full</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-600 mb-1">Employee</label>
+            <input id="editEmployee" class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-200" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1">Hours</label>
+              <input id="editHours" type="number" min="0" step="0.5"
+                     class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-200" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1">Note</label>
+              <input id="editNote" class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-200" />
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-2 pt-2">
+            <button type="button" id="btnCancel"
+                    class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-50">
+              Cancel
+            </button>
+            <button type="submit"
+                    class="rounded-lg bg-purple-700 px-4 py-2 text-sm font-bold text-white hover:bg-purple-800">
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- storage keys (try to reuse your other pages) ---
+    const EMPLOYEE_KEYS = [
+      "employees_list_like_screenshot_v3",
+      "employees_list_like_screenshot_v2_like_screenshot",
+      "employees_list_v2_like_screenshot",
+      "employees_list_v1",
+      "employees_list_v2_like_screenshot_v1",
+      "employees_list_like_screenshot_v2",
+      "employees_list_like_screenshot_v2_like_screenshot",
+      "employees_list_like_screenshot_v3",
+      "employees_list_like_screenshot_v2_like_screenshot_v3",
+      "employees_list_like_screenshot_v2_like_screenshot_v1",
+      "employees_list_like_screenshot_v2_like_screenshot_v0",
+      "employees_list_v2_like_screenshot_v0",
+      "employees_list_v2_like_screenshot_v2"
+    ];
+    const STAFF_KEYS = ["staff_list_v2", "staff_list_v1"];
+    const SCHEDULE_KEY = "work_schedule_v1";
+
+    function safeUUID() {
+      if (window.crypto?.randomUUID) return crypto.randomUUID();
+      return Math.random().toString(16).slice(2) + Date.now().toString(16);
+    }
+
+    function currentMonthValue() {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      return `${y}-${m}`;
+    }
+
+    function monthFromDate(isoDate) {
+      // isoDate: YYYY-MM-DD
+      if (!isoDate || isoDate.length < 7) return "";
+      return isoDate.slice(0, 7);
+    }
+
+    function toCsv(rows) {
+      const header = ["date","employee","shift","hours","note"];
+      const escape = (v) => {
+        const s = String(v ?? "");
+        if (s.includes('"') || s.includes(",") || s.includes("\n")) return '"' + s.replaceAll('"','""') + '"';
+        return s;
+      };
+      const lines = [header.join(",")].concat(
+        rows.map(r => [r.date, r.employeeName, r.shift, r.hours, r.note].map(escape).join(","))
+      );
+      return lines.join("\n");
+    }
+
+    function download(filename, content, mime="text/plain") {
+      const blob = new Blob([content], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    const els = {
+      month: document.getElementById("month"),
+      form: document.getElementById("form"),
+      date: document.getElementById("date"),
+      employee: document.getElementById("employee"),
+      employeeText: document.getElementById("employeeText"),
+      empHint: document.getElementById("empHint"),
+      shift: document.getElementById("shift"),
+      hours: document.getElementById("hours"),
+      note: document.getElementById("note"),
+
+      q: document.getElementById("q"),
+      btnExport: document.getElementById("btnExport"),
+      btnClearMonth: document.getElementById("btnClearMonth"),
+
+      tbody: document.getElementById("tbody"),
+      empty: document.getElementById("empty"),
+
+      modal: document.getElementById("modal"),
+      backdrop: document.getElementById("backdrop"),
+      btnClose: document.getElementById("btnClose"),
+      btnCancel: document.getElementById("btnCancel"),
+      formEdit: document.getElementById("formEdit"),
+      editDate: document.getElementById("editDate"),
+      editEmployee: document.getElementById("editEmployee"),
+      editShift: document.getElementById("editShift"),
+      editHours: document.getElementById("editHours"),
+      editNote: document.getElementById("editNote"),
+    };
+
+    let selectedMonth = currentMonthValue();
+    let employees = []; // {id, name}
+    let scheduleByMonth = {}; // { "YYYY-MM": [entry] }
+    let editId = null;
+
+    function readJson(key) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : null;
+      } catch { return null; }
+    }
+
+    function loadEmployees() {
+      // Try employees list page keys
+      for (const k of EMPLOYEE_KEYS) {
+        const data = readJson(k);
+        if (Array.isArray(data) && data.length) {
+          employees = data.map(x => ({
+            id: x.id ?? safeUUID(),
+            name: x.name ?? x.fullName ?? x.employeeName ?? ""
+          })).filter(x => x.name);
+          if (employees.length) return;
+        }
+      }
+
+      // Try staff list page keys
+      for (const k of STAFF_KEYS) {
+        const data = readJson(k);
+        if (Array.isArray(data) && data.length) {
+          employees = data.map(x => ({
+            id: x.id ?? safeUUID(),
+            name: x.name ?? ""
+          })).filter(x => x.name);
+          if (employees.length) return;
+        }
+      }
+
+      employees = [];
+    }
+
+    function loadSchedule() {
+      const data = readJson(SCHEDULE_KEY);
+      scheduleByMonth = (data && typeof data === "object") ? data : {};
+    }
+
+    function saveSchedule() {
+      localStorage.setItem(SCHEDULE_KEY, JSON.stringify(scheduleByMonth));
+    }
+
+    function ensureMonthList(month) {
+      if (!scheduleByMonth[month]) scheduleByMonth[month] = [];
+      return scheduleByMonth[month];
+    }
+
+    function setEmployeeDropdown() {
+      els.employee.innerHTML = "";
+
+      if (!employees.length) {
+        // No employees found -> allow text input
+        els.empHint.classList.remove("hidden");
+        els.employeeText.classList.remove("hidden");
+        els.employee.classList.add("hidden");
+        return;
+      }
+
+      els.empHint.classList.add("hidden");
+      els.employeeText.classList.add("hidden");
+      els.employee.classList.remove("hidden");
+
+      const opt0 = document.createElement("option");
+      opt0.value = "";
+      opt0.textContent = "Select employee...";
+      els.employee.appendChild(opt0);
+
+      employees.forEach(e => {
+        const opt = document.createElement("option");
+        opt.value = e.id;
+        opt.textContent = e.name;
+        els.employee.appendChild(opt);
+      });
+    }
+
+    function openEditModal(entry) {
+      editId = entry.id;
+      els.editDate.value = entry.date;
+      els.editEmployee.value = entry.employeeName || "";
+      els.editShift.value = entry.shift;
+      els.editHours.value = String(entry.hours ?? 0);
+      els.editNote.value = entry.note || "";
+      els.modal.classList.remove("hidden");
+    }
+
+    function closeEditModal() {
+      els.modal.classList.add("hidden");
+      editId = null;
+      els.formEdit.reset();
+    }
+
+    function rowHtml(e) {
+      return `
+        <tr>
+          <td class="px-5 py-3 font-semibold text-gray-900">${e.date}</td>
+          <td class="px-5 py-3 text-gray-800">${escapeHtml(e.employeeName)}</td>
+          <td class="px-5 py-3 text-gray-800">${escapeHtml(e.shift)}</td>
+          <td class="px-5 py-3 text-gray-800">${Number(e.hours || 0)}</td>
+          <td class="px-5 py-3 text-gray-700">${escapeHtml(e.note || "")}</td>
+          <td class="px-5 py-3">
+            <button data-edit="${e.id}" class="text-purple-700 font-bold hover:underline">Edit</button>
+            <span class="mx-2 text-gray-300">|</span>
+            <button data-del="${e.id}" class="text-red-600 font-bold hover:underline">Delete</button>
+          </td>
+        </tr>
+      `;
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function render() {
+      const list = ensureMonthList(selectedMonth).slice().sort((a,b) => a.date.localeCompare(b.date));
+      const q = els.q.value.trim().toLowerCase();
+      const filtered = !q ? list : list.filter(x =>
+        (x.employeeName || "").toLowerCase().includes(q) ||
+        (x.shift || "").toLowerCase().includes(q) ||
+        (x.note || "").toLowerCase().includes(q)
+      );
+
+      els.tbody.innerHTML = filtered.map(rowHtml).join("");
+      els.empty.classList.toggle("hidden", filtered.length !== 0);
+
+      // bind edit/delete
+      els.tbody.querySelectorAll("button[data-edit]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-edit");
+          const entry = ensureMonthList(selectedMonth).find(x => x.id === id);
+          if (entry) openEditModal(entry);
+        });
+      });
+
+      els.tbody.querySelectorAll("button[data-del]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-del");
+          scheduleByMonth[selectedMonth] = ensureMonthList(selectedMonth).filter(x => x.id !== id);
+          saveSchedule();
+          render();
+        });
+      });
+    }
+
+    // --- init month + default date ---
+    els.month.value = selectedMonth;
+    els.date.value = `${selectedMonth}-01`;
+
+    els.month.addEventListener("change", () => {
+      selectedMonth = els.month.value || currentMonthValue();
+      // snap date picker into selected month
+      if (els.date.value && monthFromDate(els.date.value) !== selectedMonth) {
+        els.date.value = `${selectedMonth}-01`;
+      }
+      render();
+    });
+
+    // Add schedule
+    els.form.addEventListener("submit", (ev) => {
+      ev.preventDefault();
+
+      const date = els.date.value;
+      if (!date || monthFromDate(date) !== selectedMonth) {
+        alert("Bạn hãy chọn Date đúng trong tháng đang chọn.");
+        return;
+      }
+
+      let employeeId = "";
+      let employeeName = "";
+
+      if (employees.length) {
+        employeeId = els.employee.value;
+        if (!employeeId) { alert("Chọn nhân viên."); return; }
+        const found = employees.find(x => x.id === employeeId);
+        employeeName = found ? found.name : "";
+      } else {
+        employeeName = els.employeeText.value.trim();
+        if (!employeeName) { alert("Nhập tên nhân viên."); return; }
+      }
+
+      const shift = els.shift.value;
+      const hours = Number(els.hours.value || 0);
+      const note = els.note.value.trim();
+
+      const entry = {
+        id: safeUUID(),
+        date,
+        employeeId,
+        employeeName,
+        shift,
+        hours,
+        note
+      };
+
+      ensureMonthList(selectedMonth).push(entry);
+      saveSchedule();
+      render();
+
+      // keep month, reset small inputs
+      els.hours.value = "";
+      els.note.value = "";
+      if (employees.length) els.employee.value = "";
+      else els.employeeText.value = "";
+    });
+
+    // Search
+    els.q.addEventListener("input", render);
+
+    // Export CSV
+    els.btnExport.addEventListener("click", () => {
+      const list = ensureMonthList(selectedMonth).slice().sort((a,b) => a.date.localeCompare(b.date));
+      const csv = toCsv(list);
+      download(`work_schedule_${selectedMonth}.csv`, csv, "text/csv");
+    });
+
+    // Clear month
+    els.btnClearMonth.addEventListener("click", () => {
+      if (!confirm(`Xoá toàn bộ lịch của tháng ${selectedMonth}?`)) return;
+      scheduleByMonth[selectedMonth] = [];
+      saveSchedule();
+      render();
+    });
+
+    // Edit modal events
+    els.btnClose.addEventListener("click", closeEditModal);
+    els.btnCancel.addEventListener("click", closeEditModal);
+    els.backdrop.addEventListener("click", closeEditModal);
+
+    els.formEdit.addEventListener("submit", (ev) => {
+      ev.preventDefault();
+      if (!editId) return;
+
+      const date = els.editDate.value;
+      const newMonth = monthFromDate(date);
+      if (!date || newMonth !== selectedMonth) {
+        alert("Date phải thuộc đúng tháng đang chọn (để đơn giản quản lý theo tháng).");
+        return;
+      }
+
+      const employeeName = els.editEmployee.value.trim();
+      if (!employeeName) { els.editEmployee.focus(); return; }
+
+      const shift = els.editShift.value;
+      const hours = Number(els.editHours.value || 0);
+      const note = els.editNote.value.trim();
+
+      const list = ensureMonthList(selectedMonth);
+      const idx = list.findIndex(x => x.id === editId);
+      if (idx >= 0) {
+        list[idx] = { ...list[idx], date, employeeName, shift, hours, note };
+      }
+
+      saveSchedule();
+      render();
+      closeEditModal();
+    });
+
+    // boot
+    loadEmployees();
+    setEmployeeDropdown();
+    loadSchedule();
+    saveSchedule();
+    render();
+  </script>
+</body>
+</html>

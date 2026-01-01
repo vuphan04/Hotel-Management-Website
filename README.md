@@ -24,10 +24,6 @@ This project focuses on front-end development and is suitable for **learning pur
 
 ---
 
-## 📁 Project Structure
-
----
-
 ## 🚀 How to Run the Project
 ### Option 1: Open directly
 - Open `index.html` with any modern web browser
